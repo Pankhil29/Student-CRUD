@@ -91,7 +91,9 @@ const StudentForm = () => {
 
   return (
     <Card className="p-4 my-3">
-      <h4>{editStudentData ? "Edit Student" : "Add New Student"}</h4>
+      <h4 className="text-center pb-3">
+        {editStudentData ? "Edit Student" : "Add New Student"}
+      </h4>
       <Form onSubmit={handleSubmit}>
         <Form.Group className="mb-2">
           <Form.Label>Student Name</Form.Label>

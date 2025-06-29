@@ -14,9 +14,9 @@ const StudentTable = () => {
   };
   return (
     <div>
-      <h4>Student List</h4>
+      <h4 className="text-center">Student List</h4>
       {students.length === 0 ? (
-        <p>No students added yet.</p>
+        <p className="text-center">No students added yet.</p>
       ) : (
         <Table striped bordered hover responsive>
           <thead>
