@@ -24,6 +24,7 @@ const StudentTable = () => {
               <th>#</th>
               <th>Name</th>
               <th>Roll No</th>
+              <th>Standard</th>
               <th>Subject</th>
               <th>Total</th>
               <th>Percentage</th>
@@ -39,6 +40,7 @@ const StudentTable = () => {
                 <td>{index + 1}</td>
                 <td>{stu.name}</td>
                 <td>{stu.roll}</td>
+                <td>{stu.std}</td>
                 <td>
                   <ul className="list-unstyled mb-0">
                     {stu.subjects.map((sub, idx) => (

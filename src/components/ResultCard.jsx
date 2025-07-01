@@ -10,10 +10,11 @@ const ResultCard = ({ show, handleClose, student }) => {
         <Modal.Title>Result Card - {student.name}</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <h4 className="text-center">Greenfield Public School</h4>
+        <h4 className="text-center">Flower Public School</h4>
         <hr />
-        <p>
-          <strong>Student Name:</strong> {student.name}
+        <p className="d-flex justify-content-between">
+          <strong>Student Name: {student.name}</strong>
+          <strong>Standard: {student.std}</strong>
         </p>
         <p>
           <strong>Roll No:</strong> {student.roll}

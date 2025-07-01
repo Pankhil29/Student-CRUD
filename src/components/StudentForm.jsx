@@ -4,8 +4,8 @@ import { useStudents } from "../Context/StudentContext";
 
 const StudentForm = () => {
   const {
-    addSubject,
-    subjects,
+    // addSubject,
+    // subjects,
     addStudent,
     updateStudent,
     editStudentData,
@@ -16,6 +16,7 @@ const StudentForm = () => {
   const [formData, setFormData] = useState({
     name: "",
     roll: "",
+    std: "",
     subjects: [],
   });
 
@@ -30,22 +31,48 @@ const StudentForm = () => {
       alert("Enter both subject and marks");
       return;
     }
+
+    // Check for duplicate subject in current formData
+    const exists = formData.subjects.some(
+      (s) => s.name.trim().toLowerCase() === subjectInput.trim().toLowerCase()
+    );
+
+    if (exists) {
+      alert("This subject already added for this student");
+      return;
+    }
+
     const newSub = {
-      name: subjectInput,
+      name: subjectInput.trim(),
       marks: Number(marksInput),
     };
+
     setFormData((prev) => ({
       ...prev,
       subjects: [...prev.subjects, newSub],
     }));
+
     setSubjectInput("");
     setMarksInput("");
   };
 
   const handleSubmit = (e) => {
-    e.preventDefault();
-
-    if (!formData.name || !formData.roll || formData.subjects.length === 0) {
+    e.preventDefault(); // page refresh na thva de.
+    if (
+      /[^A-Za-z ]+$/.test(formData.name) ||
+      /[^A-Za-z ]+$/.test(formData.subject) ||
+      /[^0-9 ]+$/.test(formData.std) ||
+      /[^0-9 ]+$/.test(formData.roll)
+    ) {
+      alert("Please enter the valid data");
+      return;
+    }
+    if (
+      !formData.name ||
+      !formData.roll ||
+      formData.subjects.length === 0 ||
+      !formData.std
+    ) {
       alert("Please fill all fields and add at least one subject");
       return;
     }
@@ -53,7 +80,6 @@ const StudentForm = () => {
     const total = formData.subjects.reduce((sum, sub) => sum + sub.marks, 0);
     const percentage = (total / (formData.subjects.length * 100)) * 100;
 
-    // Grade logic
     let grade = "";
     if (percentage >= 90) grade = "A+";
     else if (percentage >= 80) grade = "A";
@@ -61,15 +87,13 @@ const StudentForm = () => {
     else if (percentage >= 60) grade = "C";
     else grade = "D";
 
-    // Pass/Fail logic: any subject < 33 = Fail
-    const isFail = formData.subjects.some((sub) => sub.marks < 33);
+    const isFail = formData.subjects.some((sub) => sub.marks < 33); // if any subject has < 33 marks .
     const status = isFail ? "Fail" : "Pass";
 
-    // Final object
     const finalData = {
       ...formData,
       total,
-      percentage: percentage.toFixed(2),
+      percentage: percentage.toFixed(2), // two decimalpoint
       grade,
       status,
     };
@@ -81,12 +105,19 @@ const StudentForm = () => {
       addStudent(finalData);
     }
 
-    setFormData({ name: "", roll: "", subjects: [] });
+    setFormData({ name: "", roll: "", std: "", subjects: [] });
   };
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
+    const { name, value } = e.target; // destrucutring
+
+    // if (/[^A-Za-z ]+$/.test(value)) {
+    //   // console.log("name must be a string");
+
+    //   // setFormData({ name: "", roll: "", std: "", subjects: [] });
+    // } else {
     setFormData((prev) => ({ ...prev, [name]: value }));
+    // }
   };
 
   return (
@@ -105,7 +136,25 @@ const StudentForm = () => {
             onChange={handleChange}
           />
         </Form.Group>
+        {formData.name && !/^[A-Za-z ]+$/.test(formData.name) && (
+          <small className="text-danger">Name must contain only letters</small>
+        )}
 
+        <Form.Group>
+          <Form.Label>Standard</Form.Label>
+          <Form.Control
+            type="text"
+            name="std"
+            placeholder="Enter standard"
+            value={formData.std} //controlled component it changes the state
+            onChange={handleChange}
+          />
+        </Form.Group>
+        {formData.std && /[^0-9 ]+$/.test(formData.std) && (
+          <small className="text-danger">
+            Standard must contain only numbers
+          </small>
+        )}
         <Form.Group className="mb-2">
           <Form.Label>Roll No</Form.Label>
           <Form.Control
@@ -116,7 +165,11 @@ const StudentForm = () => {
             onChange={handleChange}
           />
         </Form.Group>
-
+        {formData.roll && /[^0-9 ]+$/.test(formData.roll) && (
+          <small className="text-danger">
+            Standard must contain only numbers
+          </small>
+        )}
         <Row className="align-items-end">
           <Col>
             <Form.Label>Subject</Form.Label>
@@ -142,7 +195,9 @@ const StudentForm = () => {
             </Button>
           </Col>
         </Row>
-
+        {subjectInput && !/^[A-Za-z ]+$/.test(subjectInput) && (
+          <small className="text-danger">Name must contain only letters</small>
+        )}
         <ul className="mt-3">
           {formData.subjects.map((sub, idx) => (
             <li key={idx}>
